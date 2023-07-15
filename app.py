@@ -230,7 +230,7 @@ def register_booking():
     #make a new entry in the booking table
     print(session.get('d1'))
     cursor = mysql.connection.cursor()
-    cursor.execute(f"INSERT INTO booking (customer_ID, model_ID,car_ID, booking_loan_date, booking_return_date, booking_payment, booking_addons_payment, booking_addons) VALUES ({session.get('id')},{session.get('model_id')}, {car_id}, '{session.get('d1')}', '{session.get('d2')}', {days_price}, {addons_price}, '{modified_string}')")
+    cursor.execute(f"INSERT INTO booking (customer_ID, model_ID,car_ID, booking_loan_date, booking_return_date, booking_payment, booking_addons_payment, booking_addons, booking_status) VALUES ({session.get('id')},{session.get('model_id')}, {car_id}, '{session.get('d1')}', '{session.get('d2')}', {days_price}, {addons_price}, '{modified_string}', 'Pending')")
     mysql.connection.commit()
     cursor.close()
     flash("Booking Submitted Successfully.", "success")
