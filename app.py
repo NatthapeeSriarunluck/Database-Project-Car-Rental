@@ -16,7 +16,15 @@ mysql = MySQL(app)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    if request.method == 'POST':
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        query = f"Select CURDATE() as date;"
+        cur.execute(query)
+        date = cur.fetchone()
+        cur.close()
+        return render_template('index.html', date=date)
+    
+    elif request.method == 'POST':
         d1 = request.form['booking_loan_date']
         d2 = request.form['booking_return_date']
         session['d1'] = d1
@@ -29,20 +37,23 @@ def index():
 
 @app.route('/model/')
 def model():
-    cur = mysql.connection.cursor()
-    query = """
-    SELECT m.*, COUNT(c.car_ID) AS available_model_quantity 
-    FROM model m 
-    LEFT JOIN car c ON m.model_ID = c.model_ID AND c.car_return_date < %s
-    GROUP BY m.model_ID, m.model_name 
-    HAVING available_model_quantity > 0;
-    """
-    cur.execute(query, (session['d1'],))
-    print(session)
-    models = cur.fetchall()
-    print(models)
-    cur.close()
-    return render_template('model.html', models=models)
+    if session['login'] != True:
+        cur = mysql.connection.cursor()
+        query = f"""
+        SELECT m.*, COUNT(c.car_ID) AS available_model_quantity 
+        FROM model m 
+        LEFT JOIN car c ON m.model_ID = c.model_ID AND c.car_return_date < '{session['d1']}'
+        GROUP BY m.model_ID, m.model_name 
+        HAVING available_model_quantity > 0;
+        """
+        cur.execute(query)
+        print(session)
+        models = cur.fetchall()
+        print(models)
+        cur.close()
+        return render_template('model.html', models=models)
+    else:
+        return redirect('login.html')
 
 
 @app.route('/register/', methods=['GET', 'POST'])
@@ -285,6 +296,7 @@ def thankyou():
 @app.route('/logout')
 def logout():
     session.clear()
+    session['login'] = False
     flash("You have been logged out", 'info')
     return redirect('/')
 
@@ -303,20 +315,11 @@ def adminIndex():
     
 @app.route('/adminBooking', methods=['GET', 'POST'])
 def adminBooking():
-    if request.method == 'GET':
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM booking")
-        booking = cur.fetchall()
-        cur.close()
-        return render_template('adminSide/adBooking.html', booking=booking)
-    elif request.method == 'POST':
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM booking")
-        today = cur.fetchall()
-        cur.close()
-        return render_template('adminSide/adBooking.html', booking=booking)
-    else:
-        return render_template('adminSide/adBooking.html')
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM booking")
+    booking = cur.fetchall()
+    cur.close()
+    return render_template('adminSide/adBooking.html', booking=booking)
     
 @app.route('/adminCustomer', methods = ['GET', 'POST'])
 def adminCustomer():
