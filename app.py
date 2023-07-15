@@ -284,8 +284,6 @@ def thankyou():
 
 @app.route('/logout')
 def logout():
-    return render_template('logout.html')
-
     session.clear()
     flash("You have been logged out", 'info')
     return redirect('/')

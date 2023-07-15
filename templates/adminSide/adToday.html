@@ -10,10 +10,12 @@
     <div class="product-cell category">Car_ID</div>
     <div class="product-cell category">Booking Loan</div>
     <div class="product-cell category">Booking Return</div>
+    <div class="product-cell category">Addons</div>
     <div class="product-cell category">Payment</div>
     <div class="product-cell category">Addon Payment</div>
     <div class="product-cell category">Edit/Delete</div>
   </div>
+
     {% for td in today %}
         <div class="products-row">
           <button class="cell-more-button"></button>
@@ -24,11 +26,11 @@
             <div class="product-cell">{{td['booking_loan_date']}}</div>
             <div class="product-cell">{{td['booking_return_date']}}</div>
             <div class="product-cell">{{td['booking_addons']}}</div>
+            <div class="product-cell">{{td['booking_payment']}}</div>
             <div class="product-cell">{{td['booking_addons_payment']}}</div>
             
             <div  class="product-cell"><button type="button" class="btn btn-primary">edit</button>/<button type="button" class="btn btn-danger">delete</button></div>
         </div>
-
         {% endfor %}
         {% else %}
         <div class="app-icon"><h1>No DATA<h1></div>
