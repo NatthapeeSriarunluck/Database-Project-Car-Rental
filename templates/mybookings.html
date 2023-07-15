@@ -20,8 +20,7 @@
                     <th>Days Cost</th>
                     <th>Add Ons Cost</th>
                     <th>Status</th>
-                    <th>Confirm</th>
-                    <th>Cancel</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -37,7 +36,7 @@
                     <td>{{book['booking_status']}}</td>
                     <td>
                         <button class="confirm-button">
-                            <a href="/confirm_booking/{{ book.booking_ID }}">Confirm</a>
+                            <a href="/confirm_booking/{{ book.booking_ID }}">Pay</a>
                         </button>
                         <button class="cancel-button">
                             <a href="/cancel_booking/{{ book.booking_ID }}">Cancel</a>
