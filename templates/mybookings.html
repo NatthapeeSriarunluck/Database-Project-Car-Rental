@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
-
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 <body>
+    <link rel="stylesheet" href="/static/mybookings.css" />
     <div class="mybookings">
         <div class="head">
             <h1>My Bookings</h1>
@@ -36,23 +37,24 @@
                     <td>{{book['booking_status']}}</td>
                     <td>
                         <button class="confirm-button">
-                            <a href="/confirm_booking/{{ booking.booking_ID }}">Confirm</a>
+                            <a href="/confirm_booking/{{ book.booking_ID }}">Confirm</a>
                         </button>
                         <button class="cancel-button">
-                            <a href="/cancel_booking/{{ booking.booking_ID }}">Cancel</a>
+                            <a href="/cancel_booking/{{ book.booking_ID }}">Cancel</a>
                         </button>
                     </td>
                 </tr>
-            </tbody>
-            {% endfor %}
+                {% endfor %}
                 {% else %}
-                    <div class="displya-3">No Bookings to display.</div>
+                <tr>
+                    <td colspan="9" class="display-3">No Bookings to display.</td>
+                </tr>
                 {% endif %}
+            </tbody>
         </table>
         <button class="new-booking-button">
-            <a href="/index.html">New Booking</a>
+            <a href="/">New Booking</a>
         </button>
-        
     </div>
 </body>
 

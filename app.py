@@ -39,14 +39,6 @@ def index():
     return render_template('index.html')
     
 
-
-@app.route('/about/')
-def about():
-    return render_template('about.html')
-
-@app.route('/blogs/<int:id>/')
-def blogs(id):
-    return render_template('blogs.html', blog_id = id)
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
@@ -171,43 +163,44 @@ def model():
 
 @app.route('/mybookings/', methods=['GET', 'POST'])
 def mybookings():
-    return render_template('mybookings.html')
+    try:
+        user = session['login']
+    except:
+        flash('Please sign in first', 'danger')
+        return redirect('/login')
+    
+    if session['login'] != True:
+        return redirect('/register')
+    else:
+        cur = mysql.connection.cursor()
+        query = f"SELECT * FROM booking WHERE customer_ID = '{session['id']}'"
+        cur.execute(query)
+        resultValue = cur.rowcount
+        if resultValue > 0:
+            bookings = cur.fetchall()
+            cur.close()
+            return render_template('mybookings.html', booking=bookings)
+        else:
+            cur.close()
+            return render_template('mybookings.html')
 
 # customer confirm booking
-@app.route('/confirm_booking/<int:id>', methods=['POST'])
+@app.route('/confirm_booking/<int:id>', methods=['GET'])
 def confirm_booking(id):
     return render_template('payment.html')
 
 # customer cancel booking
-@app.route('/cancel_booking/<int:id>', methods=['POST'])
+@app.route('/cancel_booking/<int:id>', methods=['GET'])
 def cancel_booking(id):
     cur = mysql.connection.cursor()
 
     query = f"DELETE FROM booking WHERE booking_ID = {id}"
-    cur.execute(query)
-    cur.nextset()   
-
+    cur.execute(query) 
     mysql.connection.commit()
     cur.close()
 
     flash("You have successfully cancelled your booking.", "success")
     return redirect('/mybookings')
-
-@app.route('/write-blog/', methods=['GET', 'POST'])
-def write_blog():
-    return render_template('write-blog.html')
-
-@app.route('/my-blogs/')
-def my_blogs():
-    return render_template('my-blogs.html')
-
-@app.route('/edit-blog/<int:id>/', methods=['GET', 'POST'])
-def edit_blog(id):
-    return render_template('edit-blog.html')
-
-@app.route('/delete-blog/<int:id>/', methods=['POST'])
-def delete_blog(id):
-    return 'success'
 
 @app.route('/logout')
 def logout():

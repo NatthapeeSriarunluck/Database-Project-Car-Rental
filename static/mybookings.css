@@ -1,0 +1,68 @@
+/* mybookings.css */
+
+.mybookings {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.my-bookings-table {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.my-bookings-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.my-bookings-table th,
+.my-bookings-table td {
+    padding: 8px;
+    text-align: center;
+}
+
+.my-bookings-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.my-bookings-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.my-bookings-table tr:hover {
+    background-color: #e6e6e6;
+}
+
+.confirm-button,
+.cancel-button,
+.new-booking-button {
+    margin-top: 10px;
+}
+
+.confirm-button a,
+.cancel-button a,
+.new-booking-button a {
+    text-decoration: none;
+    color: white;
+}
+
+.confirm-button {
+    background-color: #008000;
+}
+
+.cancel-button {
+    background-color: #ff0000;
+}
+
+.new-booking-button {
+    background-color: #4b86f0;
+}
+
+.display-3 {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+  
