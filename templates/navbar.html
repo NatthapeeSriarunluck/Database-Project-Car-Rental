@@ -1,16 +1,15 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">Navbar</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-          <a class="nav-link" href="#">Features</a>
-          <a class="nav-link" href="#">Pricing</a>
-          <a class="nav-link disabled">Disabled</a>
-        </div>
-      </div>
-    </div>
-  </nav>
+{% block content %}
+<link rel="stylesheet" href='/static/navbar.css' />
+
+    <input class="menu-icon" type="checkbox" id="menu-icon" name="menu-icon"/>
+    <label for="menu-icon"></label>
+    <nav class="nav">     
+      <ul class="pt-5">
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="{{ url_for('login')}}">sign in</a><a>/</a><a href="{{ url_for('register')}}">sign up</a></li>
+        <li><a href="{{ url_for('logout')}}">log out</a></li>
+      </ul>
+    </nav>
+  
+
+{% endblock %}

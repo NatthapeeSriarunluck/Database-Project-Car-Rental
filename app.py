@@ -18,7 +18,53 @@ mysql = MySQL(app)
 def index():
     return render_template('index.html')
 
-@app.route('/signin/', methods=['GET', 'POST'])
+
+@app.route('/about/')
+def about():
+    return render_template('about.html')
+
+@app.route('/blogs/<int:id>/')
+def blogs(id):
+    return render_template('blogs.html', blog_id = id)
+@app.route('/register/', methods=['GET', 'POST'])
+def register():
+    if request.method == 'GET':
+        return render_template('register.html')
+    elif request.method == 'POST':
+        userDetails = request.form
+        
+        if userDetails['customer_password'] != userDetails['customer_confirm_password']:
+            flash('Passwords do not match!', 'danger')
+            return render_template('register.html')
+        
+        p1 = userDetails['customer_firstname']
+        p2 = userDetails['customer_lastname']
+        p3 = userDetails['customer_dob']
+        p4 = userDetails['customer_password']
+        p6 = userDetails['customer_email']
+        p7 = userDetails['customer_phone_number']
+        p9 = userDetails['customer_identification_number']
+        p10 = userDetails['customer_passport']
+        
+
+        hashed_pw = generate_password_hash(p4)    
+        queryStatement = (
+            f"INSERT INTO "
+            f"customer(customer_firstname,customer_lastname, customer_dob, customer_password, customer_email, customer_phone_number,customer_identification_number, customer_passport, customer_payment_type, customer_payment_card_number, customer_payment_card_cvc, customer_payment_card_expiry_date) "
+            f"VALUES('{p1}', '{p2}', '{p3}','{hashed_pw}','{p6}','{p7},'{p9}','{p10}')"
+        )
+        print(queryStatement)
+        cur = mysql.connection.cursor()
+        cur.execute(queryStatement)
+        mysql.connection.commit()
+        cur.close()
+        flash("Form Submitted Successfully.", "success")
+        return redirect('/login/')    
+    return render_template('register.html')
+
+
+
+@app.route('/login/', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
         return render_template('login.html')
@@ -84,7 +130,30 @@ def login():
             cur.close()
             return redirect('/')
     return render_template('register.html')
-    
+
+@app.route('/write-blog/', methods=['GET', 'POST'])
+def write_blog():
+    return render_template('write-blog.html')
+
+@app.route('/my-blogs/')
+def my_blogs():
+    return render_template('my-blogs.html')
+
+@app.route('/edit-blog/<int:id>/', methods=['GET', 'POST'])
+def edit_blog(id):
+    return render_template('edit-blog.html')
+
+@app.route('/delete-blog/<int:id>/', methods=['POST'])
+def delete_blog(id):
+    return 'success'
+
+@app.route('/logout')
+def logout():
+    return render_template('logout.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
