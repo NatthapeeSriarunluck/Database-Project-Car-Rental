@@ -1,0 +1,37 @@
+{% block content %}
+
+<h1>Book Now</h1>
+
+<form action="{{ url_for('register_booking') }}" method="POST">
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Checkbox</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if addons %}
+      {% for addon in addons %}
+      <tr>
+        <td>{{ addon['addons_ID'] }}</td>
+        <td>{{ addon['addons_name'] }}</td>
+        <td>{{ addon['addons_price'] }}</td>
+        <td>
+          <input type="checkbox" name="selected_addons[]" value="{{ addon['addons_ID'] }}">
+        </td>
+      </tr>
+      {% endfor %}
+      {% else %}
+      <tr>
+        <td colspan="4">There is nothing here</td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+  <button type="submit">Submit</button>
+</form>
+
+{% endblock %}

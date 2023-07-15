@@ -32,7 +32,7 @@
                 <div class="value">{{ model['model_price_per_day']}} </div>
               </div>
               <div>
-                <a href="#" type="button" class="btn button text-light" id="">Info</a>
+                <a href="{{ url_for('booking', model_id=model['model_ID']) }}" type="button" class="btn button text-light" id="">Book this model</a>
               </div>
             </div>
           </div>
@@ -40,7 +40,7 @@
         <div class="general">
           <h2>{{ model['model_type']}}</h2>
             <p>
-                Dis a car
+                Amount of cars available at your loan date: {{model['available_model_quantity']}}
             </p>
           <span class="more">Mouse over the card for more info</span>
         </div>

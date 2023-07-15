@@ -26,17 +26,10 @@ body {
 }
 
 .my-bookings-table th {
-    background-color: #f2f2f2;
+    background-color: #000000;
     font-weight: bold;
 }
 
-.my-bookings-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.my-bookings-table tr:hover {
-    background-color: #e6e6e6;
-}
 
 .confirm-button,
 .cancel-button,

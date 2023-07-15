@@ -17,27 +17,49 @@ mysql = MySQL(app)
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        form = request.form
-        d1 = form['booking_loan_date']
-        d2 = form['booking_return_date']
-        
+        d1 = request.form['booking_loan_date']
+        d2 = request.form['booking_return_date']
+        session['d1'] = d1
+        session['d2'] = d2
+
         cur = mysql.connection.cursor()
-        query = "SELECT m.*, COUNT(c.car_ID) AS available_model_quantity FROM model m LEFT JOIN car c ON m.model_ID = c.model_ID AND c.car_return_date < %s GROUP BY m.model_ID, m.model_name HAVING available_model_quantity > 0;"
-        
+        query = """
+        SELECT m.*, COUNT(c.car_ID) AS available_model_quantity 
+        FROM model m 
+        LEFT JOIN car c ON m.model_ID = c.model_ID AND c.car_return_date < %s 
+        GROUP BY m.model_ID, m.model_name 
+        HAVING available_model_quantity > 0;
+        """
         cur.execute(query, (d1,))
-        resultValue = cur.rowcount
-        print(resultValue)
-        
-        if resultValue > 0:
-            models = cur.fetchall()
-            cur.close()
-            return render_template('model.html', models=models, form=form)
-        
+        models = cur.fetchall()
         cur.close()
-        return render_template('model.html', form=form)
-    
+
+        return render_template('model.html', models=models)
+
     return render_template('index.html')
-    
+
+
+@app.route('/model/', methods=['GET', 'POST'])
+def model():
+    if request.method == 'POST':
+        booking_loan_date = request.form.get('booking_loan_date')
+        booking_return_date = request.form.get('booking_return_date')
+
+        cur = mysql.connection.cursor()
+        query = f"""
+        SELECT m.*, COUNT(c.car_ID) AS available_model_quantity 
+        FROM model m 
+        LEFT JOIN car c ON m.model_ID = c.model_ID AND c.car_return_date < '{booking_loan_date}'
+        GROUP BY m.model_ID, m.model_name 
+        HAVING available_model_quantity > 0;
+        """
+        cur.execute(query)
+        models = cur.fetchall()
+        cur.close()
+
+        return render_template('model.html', models=models)
+
+    return render_template('model.html')
 
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
@@ -141,25 +163,79 @@ def login():
     return render_template('register.html')
 
 
-@app.route('/model/', methods = ['GET', 'POST'])
-def model():
-    booking_loan_date = None
-    booking_return_date = None
-    if request.method == 'POST':
-        booking_loan_date = request.form.get('booking_loan_date')
-        booking_return_date = request.form.get('booking_return_date')
-        cur = mysql.connection.cursor()
-        query = "SELECT m.*, COUNT(c.car_ID) AS available_model_quantity FROM model m LEFT JOIN car c ON m.model_ID = c.model_ID AND c.car_return_date < '{booking_loan_date}'GROUP BY m.model_ID, m.model_name HAVING available_model_quantity > 0;"
-        resultValue = cur.execute(query)
-        print(resultValue)
-        if resultValue > 0:
-            models = cur.fetchall()
-            cur.close()
-            return render_template('model.html', models=models)
-        cur.close()
-        return render_template('model.html')
-    else:
-        return render_template('model.html')
+
+# where add-ons are selected
+@app.route('/booking/<int:model_id>', methods=['GET', 'POST']) # model id should be passed and made session id here 
+def booking(model_id):
+    session["model_id"] = model_id
+    cur = mysql.connection.cursor()
+    query = "SELECT * FROM addons"
+    cur.execute(query)
+    addons = cur.fetchall()
+    cur.close()
+
+    return render_template('booking.html', addons=addons)
+
+#make an entry for booking table
+@app.route('/register_booking', methods=['POST'])
+def register_booking():
+    selected_addons = request.form.getlist('selected_addons[]')
+    addons_price = 0
+
+    #get total add on price
+    for addon_id in selected_addons:
+        cursor = mysql.connection.cursor()
+        query = f"SELECT addons_price FROM addons WHERE addons_ID = {addon_id}"
+        cursor.execute(query)
+        price = cursor.fetchone()
+        addons_price += price['addons_price']
+        cursor.close()
+
+    # get list of all add ons strings
+    addons_list = ''
+    for addon_id in selected_addons:
+        cursor = mysql.connection.cursor()
+        query = f"SELECT addons_name FROM addons WHERE addons_ID = {addon_id}"
+        cursor.execute(query)
+        result = cursor.fetchone()
+        addons_list += ',' + result['addons_name']
+        cursor.close()
+    modified_string = addons_list[1:]
+    # get number of days   
+    cursor = mysql.connection.cursor()
+    query = f"SELECT DATEDIFF('{session.get('d2')}', '{session.get('d1')}')"
+    cursor.execute(query)
+    result = cursor.fetchone()
+    num_days = result[f"DATEDIFF('{session.get('d2')}', '{session.get('d1')}')"]
+    cursor.close()
+    
+    # get the days' price of the car
+    cursor = mysql.connection.cursor()
+    query = f"SELECT model_price_per_day FROM model WHERE model_id = {session.get('model_id')}"
+    cursor.execute(query)
+    price_per_day = cursor.fetchone()
+    cursor.close()
+
+    days_price = int(price_per_day['model_price_per_day']) * num_days
+
+    #pick a random car_id from model_id
+    cursor = mysql.connection.cursor()
+    args = (session.get('d1'), session.get('model_id'))
+    cursor.callproc('pick_random_car', args)
+    result = cursor.fetchone()
+    car_id = result['booked_car_ID']
+    cursor.close()
+
+    print(session.get('id'))  
+    #make a new entry in the booking table
+    print(session.get('d1'))
+    cursor = mysql.connection.cursor()
+    cursor.execute(f"INSERT INTO booking (customer_ID, model_ID,car_ID, booking_loan_date, booking_return_date, booking_payment, booking_addons_payment, booking_addons) VALUES ({session.get('id')},{session.get('model_id')}, {car_id}, '{session.get('d1')}', '{session.get('d2')}', {days_price}, {addons_price}, '{modified_string}')")
+    mysql.connection.commit()
+    cursor.close()
+    flash("Booking Submitted Successfully.", "success")
+
+    return render_template('mybookings.html')
 
 @app.route('/mybookings/', methods=['GET', 'POST'])
 def mybookings():
@@ -202,13 +278,10 @@ def cancel_booking(id):
     flash("You have successfully cancelled your booking.", "success")
     return redirect('/mybookings')
 
+
 @app.route('/logout')
 def logout():
     return render_template('logout.html')
-
-if __name__ == '__main__':
-    app.run(debug=True)
-
 
 if __name__ == '__main__':
     app.run(debug=True)
