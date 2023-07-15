@@ -2,7 +2,7 @@
 {% block content %}
 <link rel="stylesheet" href='/static/model.css' />
 
-<h1>Availabe Models</h1>
+<h1>Available Models</h1>
 {% if models %}
     {% for model in models%}
     <div class="card {{model['model_type']}}">
@@ -46,7 +46,7 @@
         </div>
       </div>
       {% endfor %}
-      {% else %}
-      <h1>No cars today</h1>
-      {% endif %}
+{% else %}
+    <h1>No cars today</h1>
+{% endif %}
 {% endblock %}

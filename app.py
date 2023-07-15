@@ -22,44 +22,28 @@ def index():
         session['d1'] = d1
         session['d2'] = d2
 
-        cur = mysql.connection.cursor()
-        query = """
-        SELECT m.*, COUNT(c.car_ID) AS available_model_quantity 
-        FROM model m 
-        LEFT JOIN car c ON m.model_ID = c.model_ID AND c.car_return_date < %s 
-        GROUP BY m.model_ID, m.model_name 
-        HAVING available_model_quantity > 0;
-        """
-        cur.execute(query, (d1,))
-        models = cur.fetchall()
-        cur.close()
-
-        return render_template('model.html', models=models)
+        return render_template('model.html')
 
     return render_template('index.html')
 
 
-@app.route('/model/', methods=['GET', 'POST'])
+@app.route('/model/')
 def model():
-    if request.method == 'POST':
-        booking_loan_date = request.form.get('booking_loan_date')
-        booking_return_date = request.form.get('booking_return_date')
+    cur = mysql.connection.cursor()
+    query = """
+    SELECT m.*, COUNT(c.car_ID) AS available_model_quantity 
+    FROM model m 
+    LEFT JOIN car c ON m.model_ID = c.model_ID AND c.car_return_date < %s
+    GROUP BY m.model_ID, m.model_name 
+    HAVING available_model_quantity > 0;
+    """
+    cur.execute(query, (session['d1'],))
+    print(session)
+    models = cur.fetchall()
+    print(models)
+    cur.close()
+    return render_template('model.html', models=models)
 
-        cur = mysql.connection.cursor()
-        query = f"""
-        SELECT m.*, COUNT(c.car_ID) AS available_model_quantity 
-        FROM model m 
-        LEFT JOIN car c ON m.model_ID = c.model_ID AND c.car_return_date < '{booking_loan_date}'
-        GROUP BY m.model_ID, m.model_name 
-        HAVING available_model_quantity > 0;
-        """
-        cur.execute(query)
-        models = cur.fetchall()
-        cur.close()
-
-        return render_template('model.html', models=models)
-
-    return render_template('model.html')
 
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
@@ -263,7 +247,7 @@ def mybookings():
 # customer confirm booking
 @app.route('/confirm_booking/<int:id>', methods=['GET'])
 def confirm_booking(id):
-    return render_template('payment.html')
+    return render_template('payment.html', booking_id=id)
 
 # customer cancel booking
 @app.route('/cancel_booking/<int:id>', methods=['GET'])
