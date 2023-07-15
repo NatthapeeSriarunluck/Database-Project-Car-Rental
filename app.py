@@ -17,12 +17,16 @@ mysql = MySQL(app)
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
-        cur = mysql.connection.cursor()
-        query = f"Select CURDATE() as date;"
-        cur.execute(query)
-        date = cur.fetchone()
-        cur.close()
-        return render_template('index.html', date=date)
+        if session['login'] == True:
+            cur = mysql.connection.cursor()
+            query = f"Select CURDATE() as date;"
+            cur.execute(query)
+            date = cur.fetchone()
+            cur.close()
+            return render_template('index.html', date=date)
+        else:
+            flash('Please log in first.')
+            return redirect(url_for('login'))
     
     elif request.method == 'POST':
         d1 = request.form['booking_loan_date']
@@ -40,10 +44,7 @@ def model():
     if session['login'] == True:
         cur = mysql.connection.cursor()
         query = f"""
-        SELECT m.*, COUNT(c.car_ID) AS available_model_quantity 
-        FROM model m 
-        LEFT JOIN car c ON m.model_ID = c.model_ID AND c.car_return_date < '{session['d1']}' GROUP BY m.model_ID, m.model_name 
-        HAVING available_model_quantity > 0;
+        SELECT m.*, COUNT(c.car_ID) AS available_model_quantity FROM model m LEFT JOIN car c ON m.model_ID = c.model_ID AND c.car_return_date < '{session['d1']}' GROUP BY m.model_ID, m.model_name HAVING available_model_quantity > 0;
         """
         cur.execute(query)
         print(session)
