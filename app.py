@@ -106,16 +106,14 @@ def login():
                     session['firstName'] = user['admin_firstname']
                     session['lastName'] = user['admin_lastname']
                     session['dob'] = user['admin_dob']
-                    session['gender'] = user['admin_gender']
-                    session['Phone_number'] = user['admin_phonenumber']
-                    session['address'] = user['admin_address']
+                    session['Phone_number'] = user['admin_phone_number']
                     session['id'] = user['admin_ID']
                     flash('Welcome ' + session['firstName'], 'success')
                 #flash("Log In successful",'success')
                     return render_template('adminSide/adminIndex.html')
                 else:
                     cur.close()
-                flash("Password doesn't not match", 'danger')
+                    flash("Password doesn't not match", 'danger')
             else:
                 cur.close()
                 flash('User not found', 'danger')
@@ -134,9 +132,7 @@ def login():
                     session['firstName'] = user['customer_firstname']
                     session['lastName'] = user['customer_lastname']
                     session['dob'] = user['customer_dob']
-                    session['gender'] = user['customer_gender']
                     session['Phone_number'] = user['customer_phone_number']
-                    session['address'] = user['customer_address']
                     session['id'] = user['customer_ID']
                     flash('Welcome ' + session['firstName'], 'success')
                     #flash("Log In successful",'success')
