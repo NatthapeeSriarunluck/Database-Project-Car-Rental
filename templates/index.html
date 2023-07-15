@@ -21,7 +21,7 @@
             <div class="field">
                 <label for="id2">Rental Return Date</label>
                 <div class="input-field">
-                    <input type="date" id="booking_return_date" name="booking_return_date"></input>
+                    <input type="date" id="booking_return_date" name="booking_return_date"min="{{date['date']}}" value="{{date['date']}}"></input>
                 </div>
             </div>
             {% else %}
