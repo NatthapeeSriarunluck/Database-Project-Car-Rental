@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, flash, session
+from flask import Flask, render_template, request, redirect, flash, session, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mysqldb import MySQL
 import yaml
@@ -37,7 +37,7 @@ def index():
 
 @app.route('/model/')
 def model():
-    if session['login'] != True:
+    if session['login'] == True:
         cur = mysql.connection.cursor()
         query = f"""
         SELECT m.*, COUNT(c.car_ID) AS available_model_quantity 
@@ -53,7 +53,8 @@ def model():
         cur.close()
         return render_template('model.html', models=models)
     else:
-        return redirect('login.html')
+        flash('Please log in first.')
+        return redirect(url_for('login'))
 
 
 @app.route('/register/', methods=['GET', 'POST'])
