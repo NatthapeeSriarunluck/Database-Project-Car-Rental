@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<body>
+    <div class="mybookings">
+        <div class="head">
+            <h1>My Bookings</h1>
+        </div>
+    </div>
+
+    <div class="my-bookings-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Car Model</th>
+                    <th>Loan Date</th>
+                    <th>Return Date</th>
+                    <th>Add Ons</th>
+                    <th>Add Ons Cost</th>
+                    <th>Total Cost</th>
+                    <th>Status</th>
+                    <th>Confirm</th>
+                    <th>Cancel</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if booking %}
+                {% for book in booking %}
+                <tr>
+                    <td>{{book['model_ID']}}</td>
+                    <td>{{book['booking_loan_date']}}</td>
+                    <td>{{book['booking_return_date']}}</td>
+                    <td>{{book['booking_addons']}}</td>
+                    <td>{{book['booking_addons_payment']}}</td>
+                    <td>{{book['booking_payment']}}</td>
+                    <td>{{book['booking_status']}}</td>
+                    <td>
+                        <button class="confirm-button">
+                            <a href="/confirm_booking/{{ booking.booking_ID }}">Confirm</a>
+                        </button>
+                        <button class="cancel-button">
+                            <a href="/cancel_booking/{{ booking.booking_ID }}">Cancel</a>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            {% endfor %}
+                {% else %}
+                    <div class="displya-3">No Bookings to display.</div>
+                {% endif %}
+        </table>
+        <button class="new-booking-button">
+            <a href="/index.html">New Booking</a>
+        </button>
+        
+    </div>
+</body>
+
+{% endblock %}

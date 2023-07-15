@@ -173,6 +173,30 @@ def model():
     else:
         return render_template('model.html')
 
+@app.route('/mybookings/', methods=['GET', 'POST'])
+def mybookings():
+    return render_template('mybookings.html')
+
+# customer confirm booking
+@app.route('/confirm_booking/<int:id>', methods=['POST'])
+def confirm_booking(id):
+    return render_template('payment.html')
+
+# customer cancel booking
+@app.route('/cancel_booking/<int:id>', methods=['POST'])
+def cancel_booking(id):
+    cur = mysql.connection.cursor()
+
+    query = f"DELETE FROM booking WHERE booking_ID = {id}"
+    cur.execute(query)
+    cur.nextset()   
+
+    mysql.connection.commit()
+    cur.close()
+
+    flash("You have successfully cancelled your booking.", "success")
+    return redirect('/mybookings')
+
 @app.route('/write-blog/', methods=['GET', 'POST'])
 def write_blog():
     return render_template('write-blog.html')
