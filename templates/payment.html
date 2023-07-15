@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='payment.css') }}">
+<body>
+    <link rel="stylesheet" href="/static/payment.css" />
+    <div class="payment">
+        <div class="head">
+            <h1>Payment</h1>
+        </div>
+
+        <div class="payment-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rental Period Cost</th>
+                        <th>Total Add On Costs</th>
+                        <th>Total Payment</th>
+                        <th>Pay</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if booking %}
+                        {% for book in booking %}
+                        <tr>
+                            <td>{{book['booking_payment']}}</td>
+                            <td>{{book['booking_addons_payment']}}</td>
+                            <td>{{book['booking_payment'] + book['booking_addons_payment']}}</td>
+                            <td>
+                                <button class="pay-button">
+                                    <a href="/templates/thankyou.html">Pay</a>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+{% endblock %}

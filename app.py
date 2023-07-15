@@ -278,6 +278,25 @@ def cancel_booking(id):
     flash("You have successfully cancelled your booking.", "success")
     return redirect('/mybookings')
 
+@app.route('/payment/<int:bookingID>', methods=['GET']) 
+def payment(bookingID):
+    cur = mysql.connection.cursor()
+
+    query = f"SELECT * FROM booking WHERE booking_ID = {bookingID}"
+    print(query)
+    cur.execute(query)
+    booking = cur.fetchone()
+    print(booking)
+
+    mysql.connection.commit()
+    cur.close()
+
+    flash("Payment Successful. Thank you for your patrionage.")
+    return redirect('/thankyou')
+
+@app.route('/thankyou/')
+def thankyou():
+    return render_template('thankyou.html')
 
 @app.route('/logout')
 def logout():
