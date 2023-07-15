@@ -1,0 +1,97 @@
+{% extends 'adminSide/adminBase.html' %}
+{% block content %}
+{% if today %}
+<div class="app-icon">Booking</div>
+<div class="products-area-wrapper tableView">
+  <div class="products-header">
+    <div class="product-cell category">Booking ID</div>
+    <div class="product-cell category">Customer ID</div>
+    <div class="product-cell category">Model ID</div>
+    <div class="product-cell category">Car_ID</div>
+    <div class="product-cell category">Booking Loan</div>
+    <div class="product-cell category">Booking Return</div>
+    <div class="product-cell category">Payment</div>
+    <div class="product-cell category">Addon Payment</div>
+    <div class="product-cell category">Edit/Delete</div>
+  </div>
+    {% for td in today %}
+        <div class="products-row">
+          <button class="cell-more-button"></button>
+            <div class="product-cell"><span>{{td['booking_ID']}}</span></div>
+            <div class="product-cell">{{td['customer_ID']}}</div>
+            <div class="product-cell">{{td['model_ID']}}</div>
+            <div class="product-cell">{{td['car_ID']}}</div>
+            <div class="product-cell">{{td['booking_loan_date']}}</div>
+            <div class="product-cell">{{td['booking_return_date']}}</div>
+            <div class="product-cell">{{td['booking_addons']}}</div>
+            <div class="product-cell">{{td['booking_addons_payment']}}</div>
+            
+            <div  class="product-cell"><button type="button" class="btn btn-primary">edit</button>/<button type="button" class="btn btn-danger">delete</button></div>
+        </div>
+
+        {% endfor %}
+        {% else %}
+        <div class="app-icon"><h1>No DATA<h1></div>
+        {% endif %}
+        <div class="app-icon">Model</div>
+        <div class="products-area-wrapper tableView">
+            <div class="products-header">
+              <div class="product-cell category">Model ID</div>
+              <div class="product-cell category">Name</div>
+              <div class="product-cell category">Type</div>
+              <div class="product-cell category">Fuel Type</div>
+              <div class="product-cell category">Seats</div>
+              <div class="product-cell category">Gear Type</div>
+              <div class="product-cell category">Price/day</div>
+              <div class="product-cell category">Quantity</div>
+              <div class="product-cell category">Available</div>
+              <div class="product-cell category">Edit/Delete</div>
+        </div>
+        {% if model %}
+        {% for td in model %}
+            <div class="products-row">
+              <button class="cell-more-button"></button>
+                <div class="product-cell"><span>{{td['model_ID']}}</span></div>
+                <div class="product-cell">{{td['model_name']}}</div>
+                <div class="product-cell">{{td['model_type']}}</div>
+                <div class="product-cell">{{td['model_gasoline_type']}}</div>
+                <div class="product-cell">{{td['model_passenger']}}</div>
+                <div class="product-cell">{{td['model_gear_type']}}</div>
+                <div class="product-cell">{{td['model_price_per_day']}}</div>
+                <div class="product-cell">{{td['model_quantity']}}</div>
+                <div class="product-cell">{{td['available_model_quantity']}}</div>
+                
+                <div  class="product-cell"><button type="button" class="btn btn-primary">edit</button>/<button type="button" class="btn btn-danger">delete</button></div>
+            </div>
+        {% endfor %}
+        {% else %}
+        <div class="app-icon"><h1>No DATA<h1></div>
+        {% endif %}
+
+        
+        <div class="app-icon">Car</div>
+        <div class="products-area-wrapper tableView">
+            <div class="products-header">
+              <div class="product-cell category">Car ID</div>
+              <div class="product-cell category">Model_ID</div>
+              <div class="product-cell category">Load Date</div>
+              <div class="product-cell category">Return Date</div>
+              <div class="product-cell category">Edit/Delete</div>
+        </div>
+        {% if car %}
+        {% for td in car %}
+            <div class="products-row">
+              <button class="cell-more-button"></button>
+                <div class="product-cell"><span>{{td['car_ID']}}</span></div>
+                <div class="product-cell">{{td['model_ID']}}</div>
+                <div class="product-cell">{{td['car_loan_date']}}</div>
+                <div class="product-cell">{{td['car_return_date']}}</div>
+                
+                <div  class="product-cell"><button type="button" class="btn btn-primary">edit</button>/<button type="button" class="btn btn-danger">delete</button></div>
+            </div>
+        {% endfor %}
+        {% else %}
+        <div class="app-icon"><h1>No DATA<h1></div>
+        {% endif %}
+
+{% endblock %}

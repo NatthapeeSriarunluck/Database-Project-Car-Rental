@@ -1,0 +1,32 @@
+{% extends 'adminSide/adminBase.html' %}
+{% block content %}
+{% if review %}
+<div class="products-area-wrapper tableView">
+        <div class="products-header">
+          <div class="product-cell category">Review ID</div>
+          <div class="product-cell category">Model ID</div>
+          <div class="product-cell category">Customer ID</div>
+          <div class="product-cell category">Content</div>
+          <div class="product-cell category">Date</div>
+          <div class="product-cell category">Rating</div>
+          <div class="product-cell category">Edit/Delete</div>
+        </div>
+
+    {% for td in review %}
+        <div class="products-row">
+          <button class="cell-more-button"></button>
+            <div class="product-cell"><span>{{td['review_ID']}}</span></div>
+            <div class="product-cell">{{td['model_ID']}}</div>
+            <div class="product-cell">{{td['customer_ID']}}</div>
+            <div class="product-cell">{{td['review_content']}}</div>
+            <div class="product-cell">{{td['review_date']}}</div>
+            <div class="product-cell">{{td['review_value_for_money']}}</div>
+            
+            <div class="product-cell"><button type="button" class="btn btn-primary">edit</button>/<button type="button" class="btn btn-danger">delete</button></div>
+        </div>
+
+        {% endfor %}
+        {% else %}
+        <div class="app-icon"><h1>No DATA<h1></div>
+        {% endif %}
+{% endblock %}

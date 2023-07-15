@@ -1,0 +1,38 @@
+{% extends 'adminSide/adminBase.html' %}
+{% block content %}
+{% if model %}
+<div class="products-area-wrapper tableView">
+  <div class="products-header">
+    <div class="product-cell category">Model ID</div>
+    <div class="product-cell category">Name</div>
+    <div class="product-cell category">Type</div>
+    <div class="product-cell category">Fuel Type</div>
+    <div class="product-cell category">Seats</div>
+    <div class="product-cell category">Gear Type</div>
+    <div class="product-cell category">Price/day</div>
+    <div class="product-cell category">Quantity</div>
+    <div class="product-cell category">Available</div>
+    <div class="product-cell category">Edit/Delete</div>
+</div>
+
+        {% for td in model %}
+            <div class="products-row">
+              <button class="cell-more-button"></button>
+                <div class="product-cell"><span>{{td['model_ID']}}</span></div>
+                <div class="product-cell">{{td['model_name']}}</div>
+                <div class="product-cell">{{td['model_type']}}</div>
+                <div class="product-cell">{{td['model_gasoline_type']}}</div>
+                <div class="product-cell">{{td['model_passenger']}}</div>
+                <div class="product-cell">{{td['model_gear_type']}}</div>
+                <div class="product-cell">{{td['model_price_per_day']}}</div>
+                <div class="product-cell">{{td['model_quantity']}}</div>
+                <div class="product-cell">{{td['available_model_quantity']}}</div>
+                
+                <div  class="product-cell"><button type="button" class="btn btn-primary">edit</button>/<button type="button" class="btn btn-danger">delete</button></div>
+            </div>
+
+        {% endfor %}
+        {% else %}
+        <div class="app-icon"><h1>No DATA<h1></div>
+        {% endif %}
+{% endblock %}

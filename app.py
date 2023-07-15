@@ -302,5 +302,112 @@ def thankyou():
 def logout():
     return render_template('logout.html')
 
+    session.clear()
+    flash("You have been logged out", 'info')
+    return redirect('/')
+
+@app.route('/adminIndex', methods=['GET', 'POST'])
+def adminIndex():
+    if request.method == 'GET':
+        return render_template('adminSide/adminIndex.html')
+    elif request.method == 'POST':
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM booking")
+        today = cur.fetchall()
+        cur.close()
+        return render_template('adminSide/adminIndex.html', today=today)
+    else:
+        return render_template('adminSide/adminIndex.html')
+    
+@app.route('/adminBooking', methods=['GET', 'POST'])
+def adminBooking():
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM booking")
+        booking = cur.fetchall()
+        cur.close()
+        return render_template('adminSide/adBooking.html', booking=booking)
+    elif request.method == 'POST':
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM booking")
+        today = cur.fetchall()
+        cur.close()
+        return render_template('adminSide/adBooking.html', booking=booking)
+    else:
+        return render_template('adminSide/adBooking.html')
+    
+@app.route('/adminCustomer', methods = ['GET', 'POST'])
+def adminCustomer():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM customer")
+    val = cur.fetchall()
+    cur.close()
+    return render_template('adminSide/adCustomer.html', customer=val)
+
+@app.route('/adminCarModel', methods = ['GET', 'POST'])
+def adminCarModel():
+    cur = mysql.connection.cursor()
+    query = f"SELECT m.*, COUNT(c.car_ID) AS available_model_quantity FROM model m LEFT JOIN car c ON m.model_ID = c.model_ID AND c.car_return_date < '2023-07-21'  GROUP BY m.model_ID, m.model_name HAVING available_model_quantity > 0;"
+    cur.execute(query)
+    val = cur.fetchall()
+    cur.close()
+    return render_template('adminSide/adCarModel.html', model=val)
+
+@app.route('/adminCar', methods = ['GET', 'POST'])
+def adminCar():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM car")
+    val = cur.fetchall()
+    cur.close()
+    return render_template('adminSide/adCar.html', car=val)
+    
+@app.route('/adminAdmin', methods = ['GET', 'POST'])
+def adminAdmin():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM admin")
+    val = cur.fetchall()
+    cur.close()
+    return render_template('adminSide/adAdmin.html', admin=val)
+
+@app.route('/adminReview', methods = ['GET', 'POST'])
+def adminReview():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM review")
+    val = cur.fetchall()
+    cur.close()
+    return render_template('adminSide/adReview.html', review=val)
+
+@app.route('/adminToday', methods = ['GET', 'POST'])
+def adminToday():
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        
+        query = f"SELECT * FROM booking WHERE booking_loan_date <= CURDATE() AND booking_return_date >= CURDATE();"
+        cur.execute(query)
+        today = cur.fetchall()
+        
+        query = f"SELECT m.*, COUNT(c.car_ID) AS available_model_quantity FROM model m LEFT JOIN car c ON m.model_ID = c.model_ID AND c.car_return_date < CURDATE()  GROUP BY m.model_ID, m.model_name HAVING available_model_quantity > 0;"
+        cur.execute(query)
+        model = cur.fetchall()
+        
+        query = f"SELECT * FROM car WHERE car_loan_date <= CURDATE() AND car_return_date >= CURDATE();"
+        cur.execute(query)
+        car = cur.fetchall()
+        
+        cur.close()
+        return render_template('adminSide/adToday.html', today=today, model=model, car=car)
+    elif request.method == 'POST':
+        cur = mysql.connection.cursor()
+        query = f"SELECT * FROM booking WHERE booking_loan_date <= CURDATE() AND booking_return_date >= CURDATE();"
+        cur.execute(query)
+        today = cur.fetchall()
+        cur.close()
+        return render_template('adminSide/adToday.html', today=today)
+    else:
+        return render_template('adminSide/adToday.html')
+        
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(
+        debug=True
+    )

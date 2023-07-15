@@ -1,0 +1,32 @@
+{% extends 'adminSide/adminBase.html' %}
+{% block content %}
+{% if customer %}
+<div class="products-area-wrapper tableView">
+  <div class="products-header">
+    <div class="product-cell category">Customer ID</div>
+    <div class="product-cell category">First Name</div>
+    <div class="product-cell category">Last Name</div>
+    <div class="product-cell category">DOB</div>
+    <div class="product-cell category">Email</div>
+    <div class="product-cell category">Phone Number</div>
+    <div class="product-cell category">Edit/Delete</div>
+  </div>
+
+    {% for td in customer %}
+        <div class="products-row">
+          <button class="cell-more-button"></button>
+            <div class="product-cell"><span>{{td['customer_ID']}}</span></div>
+            <div class="product-cell">{{td['customer_firstname']}}</div>
+            <div class="product-cell">{{td['customer_lastname']}}</div>
+            <div class="product-cell">{{td['customer_dob']}}</div>
+            <div class="product-cell">{{td['customer_email']}}</div>
+            <div class="product-cell">{{td['customer_phone_number']}}</div>
+            
+            <div  class="product-cell"><button type="button" class="btn btn-primary">edit</button>/<button type="button" class="btn btn-danger">delete</button></div>
+        </div>
+
+        {% endfor %}
+        {% else %}
+        <div class="app-icon"><h1>No DATA<h1></div>
+        {% endif %}
+{% endblock %}
