@@ -29,12 +29,10 @@ def index():
             return redirect(url_for('login'))
     
     elif request.method == 'POST':
-        d1 = request.form['booking_loan_date']
-        d2 = request.form['booking_return_date']
-        session['d1'] = d1
-        session['d2'] = d2
+        session['d1'] = request.form['booking_loan_date']
+        session['d2'] = request.form['booking_return_date']
 
-        return redirect('model.html')
+        return redirect('model')
 
     return render_template('index.html')
 
