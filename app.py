@@ -14,10 +14,30 @@ app.config['MYSQL_DB'] = cred['mysql_db']
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 mysql = MySQL(app)
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
+    if request.method == 'POST':
+        form = request.form
+        d1 = form['booking_loan_date']
+        d2 = form['booking_return_date']
+        
+        cur = mysql.connection.cursor()
+        query = "SELECT m.*, COUNT(c.car_ID) AS available_model_quantity FROM model m LEFT JOIN car c ON m.model_ID = c.model_ID AND c.car_return_date < %s GROUP BY m.model_ID, m.model_name HAVING available_model_quantity > 0;"
+        
+        cur.execute(query, (d1,))
+        resultValue = cur.rowcount
+        print(resultValue)
+        
+        if resultValue > 0:
+            models = cur.fetchall()
+            cur.close()
+            return render_template('model.html', models=models, form=form)
+        
+        cur.close()
+        return render_template('model.html', form=form)
     
     return render_template('index.html')
+    
 
 
 @app.route('/about/')
@@ -86,14 +106,16 @@ def login():
                     session['firstName'] = user['admin_firstname']
                     session['lastName'] = user['admin_lastname']
                     session['dob'] = user['admin_dob']
-                    session['Phone_number'] = user['admin_phone_number']
+                    session['gender'] = user['admin_gender']
+                    session['Phone_number'] = user['admin_phonenumber']
+                    session['address'] = user['admin_address']
                     session['id'] = user['admin_ID']
                     flash('Welcome ' + session['firstName'], 'success')
                 #flash("Log In successful",'success')
                     return render_template('adminSide/adminIndex.html')
                 else:
                     cur.close()
-                    flash("Password doesn't not match", 'danger')
+                flash("Password doesn't not match", 'danger')
             else:
                 cur.close()
                 flash('User not found', 'danger')
@@ -112,7 +134,9 @@ def login():
                     session['firstName'] = user['customer_firstname']
                     session['lastName'] = user['customer_lastname']
                     session['dob'] = user['customer_dob']
+                    session['gender'] = user['customer_gender']
                     session['Phone_number'] = user['customer_phone_number']
+                    session['address'] = user['customer_address']
                     session['id'] = user['customer_ID']
                     flash('Welcome ' + session['firstName'], 'success')
                     #flash("Log In successful",'success')
@@ -127,6 +151,27 @@ def login():
             cur.close()
             return redirect('/')
     return render_template('register.html')
+
+
+@app.route('/model/', methods = ['GET', 'POST'])
+def model():
+    booking_loan_date = None
+    booking_return_date = None
+    if request.method == 'POST':
+        booking_loan_date = request.form.get('booking_loan_date')
+        booking_return_date = request.form.get('booking_return_date')
+        cur = mysql.connection.cursor()
+        query = "SELECT m.*, COUNT(c.car_ID) AS available_model_quantity FROM model m LEFT JOIN car c ON m.model_ID = c.model_ID AND c.car_return_date < '{booking_loan_date}'GROUP BY m.model_ID, m.model_name HAVING available_model_quantity > 0;"
+        resultValue = cur.execute(query)
+        print(resultValue)
+        if resultValue > 0:
+            models = cur.fetchall()
+            cur.close()
+            return render_template('model.html', models=models)
+        cur.close()
+        return render_template('model.html')
+    else:
+        return render_template('model.html')
 
 @app.route('/write-blog/', methods=['GET', 'POST'])
 def write_blog():
