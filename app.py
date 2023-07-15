@@ -220,18 +220,16 @@ def register_booking():
     cursor.callproc('pick_random_car', args)
     result = cursor.fetchone()
     car_id = result['booked_car_ID']
-    cursor.close()
-
-    print(session.get('id'))  
+    cursor.close() 
     #make a new entry in the booking table
-    print(session.get('d1'))
     cursor = mysql.connection.cursor()
     cursor.execute(f"INSERT INTO booking (customer_ID, model_ID,car_ID, booking_loan_date, booking_return_date, booking_payment, booking_addons_payment, booking_addons, booking_status) VALUES ({session.get('id')},{session.get('model_id')}, {car_id}, '{session.get('d1')}', '{session.get('d2')}', {days_price}, {addons_price}, '{modified_string}', 'Pending')")
     mysql.connection.commit()
     cursor.close()
     flash("Booking Submitted Successfully.", "success")
 
-    return render_template('mybookings.html')
+    return redirect(url_for('mybookings'))
+
 
 @app.route('/mybookings/', methods=['GET', 'POST'])
 def mybookings():
@@ -245,9 +243,11 @@ def mybookings():
         return redirect('/register')
     else:
         cur = mysql.connection.cursor()
+        print(session['id'])
         query = f"SELECT * FROM booking WHERE customer_ID = '{session['id']}'"
         cur.execute(query)
         resultValue = cur.rowcount
+        print(resultValue)
         if resultValue > 0:
             bookings = cur.fetchall()
             cur.close()
