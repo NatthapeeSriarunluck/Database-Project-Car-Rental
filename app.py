@@ -33,15 +33,8 @@ def index():
         d2 = request.form['booking_return_date']
         session['d1'] = d1
         session['d2'] = d2
-        
-        cur = mysql.connection.cursor()
-        query = f"""
-        SELECT m.*, COUNT(c.car_ID) AS available_model_quantity FROM model m LEFT JOIN car c ON m.model_ID = c.model_ID AND c.car_return_date < '{session['d1']}' GROUP BY m.model_ID, m.model_name HAVING available_model_quantity > 0;
-        """
-        cur.execute(query)
-        models = cur.fetchall()
-        cur.close()
-        return render_template('model.html', models=models)
+
+        return redirect('model.html')
 
     return render_template('index.html')
 
