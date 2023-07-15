@@ -37,24 +37,24 @@ def register():
             flash('Passwords do not match!', 'danger')
             return render_template('register.html')
         
+        cur = mysql.connection.cursor()
         p1 = userDetails['customer_firstname']
         p2 = userDetails['customer_lastname']
         p3 = userDetails['customer_dob']
         p4 = userDetails['customer_password']
-        p6 = userDetails['customer_email']
-        p7 = userDetails['customer_phone_number']
-        p9 = userDetails['customer_identification_number']
-        p10 = userDetails['customer_passport']
+        p5 = userDetails['customer_email']
+        p6 = userDetails['customer_phone_number']
+
         
 
         hashed_pw = generate_password_hash(p4)    
         queryStatement = (
             f"INSERT INTO "
-            f"customer(customer_firstname,customer_lastname, customer_dob, customer_password, customer_email, customer_phone_number,customer_identification_number, customer_passport, customer_payment_type, customer_payment_card_number, customer_payment_card_cvc, customer_payment_card_expiry_date) "
-            f"VALUES('{p1}', '{p2}', '{p3}','{hashed_pw}','{p6}','{p7},'{p9}','{p10}')"
+            f"customer(customer_firstname,customer_lastname, customer_dob, customer_password, customer_email, customer_phone_number) "
+            f"VALUES('{p1}', '{p2}', '{p3}','{hashed_pw}','{p5}','{p6}')"
         )
         print(queryStatement)
-        cur = mysql.connection.cursor()
+    
         cur.execute(queryStatement)
         mysql.connection.commit()
         cur.close()
