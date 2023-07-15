@@ -1,4 +1,34 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>PBNJ Car Rental</h1>
+
+<body>
+    <div class="container">
+        <div class="head">
+            <h1>PBNJ CAR RENTAL</h1>
+        </div>
+        <div class="page-description">
+            <p>Bangkok - Same Drop Off</p>
+            <p>Choose a Rental Period.</p>
+        </div>
+
+        <form method="POST">
+            <div class="field">
+                <label for="id1">Rental Loan Date</label>
+                <div class="input-field">
+                    <input type="date" id="booking_load_date" name="booking_loan_date" min="'2023-07-01'"></input>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="id2">Rental Return Date</label>
+                <div class="input-field">
+                    <input type="date" id="booking_return_date" name="booking_"></input>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary"><a href="#">SEARCH</a></button>
+        </form>
+    </div>
+</body>
+
 {% endblock %}
