@@ -1,5 +1,9 @@
 /* mybookings.css */
 
+body {
+    max-width: 80%;
+}
+
 .mybookings {
     text-align: center;
     margin-top: 20px;
