@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+<body>
+    <div class="container">
+        <div class="head">
+            <h1>PBNJ CAR RENTAL</h1>
+        </div>
+        <div class="page-description">
+            <p>Bangkok - Same Drop Off</p>
+            <p>Choose a Rental Period.</p>
+        </div>
+        {% if date %}
+        <form method="POST">
+            <div class="field">
+                <label for="id1">Rental Loan Date</label>
+                <div class="input-field">
+                    <input type="date" id="booking_loan_date" name="booking_loan_date" min="{{date['date']}}" value="{{date['date']}}"></input>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="id2">Rental Return Date</label>
+                <div class="input-field">
+                    <input type="date" id="booking_return_date" name="booking_return_date"min="{{date['date']}}" value="{{date['date']}}"></input>
+                </div>
+            </div>
+            {% else %}
+            {% endif %}
+            <button type="submit" class="btn btn-primary"><a href="{{url_for('model')}}">Submit</a></button>
+        </form>
+    </div>
+</body>
+
+{% endblock %}

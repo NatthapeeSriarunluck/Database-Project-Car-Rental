@@ -1,21 +1,72 @@
-{% extends 'base.html' %}
-{% block content %}
 <link rel="stylesheet" href='/static/login.css' />
 
-<div class="display-2">Log In</div>
+{% for category, message in get_flashed_messages(with_categories=true) %}
+    <div class="alert alert-{{category}} alert-dismissible fade show" role="alert" style="margin: 20px 20px 20px 20px;">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">x</button>
+    </div>
+{% endfor %}
 
-<div class="shadow p-3 mb-5 bg-body rounded" style="margin: 40px 40px 40px 40px;">
+
 <form method="POST">
-  <div class="mb-3">
-    <label for="username" class="form-label">Email</label>
-    <input type="text" class="form-control" id="customer_email" name="customer_email" />
-  </div>
-  <div class="mb-3">
-    <label for="password" class="form-label">Password</label>
-    <input type="password" class="form-control" id="customer_password" name="customer_password" />
-  </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+<div class="login-wrap">
+	<div class="login-html">
+		<input id="tab-1" type="radio" name="tab" class="sign-in" id="formType" name="formType" value="1" checked><label for="tab-1" class="tab">Sign In</label>
+		<input id="tab-2" type="radio" name="tab" class="sign-up" id="formType" name="formType" value="2"><label for="tab-2" class="tab">Sign Up</label>
+		<div class="login-form">
+			<div class="sign-in-htm">
+				<div class="group">
+					<label for="user" class="label">Email</label>
+					<input id="signin_email" name="signin_email" type="text" class="input">
+				</div>
+				<div class="group">
+					<label for="pass" class="label">Password</label>
+					<input id="signin_password" name="signin_password" type="password" class="input" data-type="password">
+				</div>
+				<div class="group">
+					<input id="check" type="checkbox" class="check" checked>
+					<label for="check"><span class="icon"></span> Keep me Signed in</label>
+				</div>
+				<div class="group">
+                    <button type="submit" class="button" id="formType" name="formType" value="1">Sign in</button>
+				</div>
+				<div class="hr"></div>
+				<div class="foot-lnk"></div>
+			</div>
+			<div class="sign-up-htm">
+				<div class="group">
+					<label for="user" class="label">First Name</label>
+					<input id="signup_firstname" name="signup_firstname" type="text" class="input" placeholder="First Name">
+				</div>
+                <div class="group">
+					<label for="user" class="label">Last Name</label>
+					<input id="signup_lastname" name="signup_lastname" type="text" class="input" placeholder="Last Name">
+				</div>
+                <div class="group">
+					<label for="pass" class="label">Email Address</label>
+					<input id="signup_email" name="signup_email" type="Email" class="input" placeholder="user@gmail.com">
+				</div>
+                <div class="group">
+					<label for="pass" class="label">Date of Birth</label>
+					<input type="date" class="input" id="signup_dob" name="signup_dob" value="2001-05-26" min="1950-01-01" max="2005-12-31">
+				</div>
+                <div class="group">
+					<label for="pass" class="label">Phone Number</label>
+					<input id="signup_phone_number" pattern="\d+" name="signup_phone_number" type="text" class="input" placeholder="088 332 5532">
+				</div>
+				<div class="group">
+					<label for="pass" class="label">Password</label>
+					<input id="signup_password" name="signup_password" type="password" class="input" data-type="password" placeholder="Password">
+				</div>
+				<div class="group">
+					<label for="pass" class="label">Confirm Password</label>
+					<input placeholder="Confirm Password" id="signup_confirm_password" name="signup_confirm_password" type="password" class="input" data-type="password">
+				</div>
+				<div class="group">
+                    <button type="submit" class="button" id="formType" name="formType" value="2">Register</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
-
-{% endblock %}
+</form>

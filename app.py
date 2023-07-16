@@ -14,8 +14,13 @@ app.config['MYSQL_DB'] = cred['mysql_db']
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 mysql = MySQL(app)
 
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    return render_template('index.html')
+
+@app.route('/reserve', methods=['GET', 'POST'])
+def reserve():
     if request.method == 'GET':
         if session['login'] == True:
             cur = mysql.connection.cursor()
@@ -23,7 +28,7 @@ def index():
             cur.execute(query)
             date = cur.fetchone()
             cur.close()
-            return render_template('index.html', date=date)
+            return render_template('reserve.html', date=date)
         else:
             flash('Please log in first.')
             return redirect(url_for('login'))
@@ -34,7 +39,7 @@ def index():
 
         return redirect('model')
 
-    return render_template('index.html')
+    return render_template('reserve.html')
 
 
 @app.route('/model/')
@@ -51,109 +56,6 @@ def model():
     else:
         flash('Please log in first.')
         return redirect(url_for('login'))
-
-
-@app.route('/register/', methods=['GET', 'POST'])
-def register():
-    if request.method == 'GET':
-        return render_template('register.html')
-    elif request.method == 'POST':
-        userDetails = request.form
-        
-        if userDetails['customer_password'] != userDetails['customer_confirm_password']:
-            flash('Passwords do not match!', 'danger')
-            return render_template('register.html')
-        
-        cur = mysql.connection.cursor()
-        p1 = userDetails['customer_firstname']
-        p2 = userDetails['customer_lastname']
-        p3 = userDetails['customer_dob']
-        p4 = userDetails['customer_password']
-        p5 = userDetails['customer_email']
-        p6 = userDetails['customer_phone_number']
-
-        
-
-        hashed_pw = generate_password_hash(p4)    
-        queryStatement = (
-            f"INSERT INTO "
-            f"customer(customer_firstname,customer_lastname, customer_dob, customer_password, customer_email, customer_phone_number) "
-            f"VALUES('{p1}', '{p2}', '{p3}','{hashed_pw}','{p5}','{p6}')"
-        )
-        print(queryStatement)
-    
-        cur.execute(queryStatement)
-        mysql.connection.commit()
-        cur.close()
-        flash("Form Submitted Successfully.", "success")
-        return redirect('/login/')    
-    return render_template('register.html')
-
-
-
-@app.route('/login/', methods=['GET', 'POST'])
-def login():
-    if request.method == 'GET':
-        return render_template('login.html')
-    elif request.method == 'POST':
-        loginForm = request.form
-        user = loginForm['customer_email']
-        if ("@admin.co.th" in user):
-            cur = mysql.connection.cursor()
-            queryStatement = f"SELECT * FROM admin WHERE admin_email = '{user}'"
-            numRow = cur.execute(queryStatement)
-            if numRow > 0:
-                user =  cur.fetchone()
-                if check_password_hash(user['admin_password'], loginForm['customer_password']):
-
-                # Record session information
-                    session['login'] = True
-                    session['email'] = user['admin_email']
-                    session['firstName'] = user['admin_firstname']
-                    session['lastName'] = user['admin_lastname']
-                    session['dob'] = user['admin_dob']
-                    session['Phone_number'] = user['admin_phone_number']
-                    session['id'] = user['admin_ID']
-                    flash('Welcome ' + session['firstName'], 'success')
-                #flash("Log In successful",'success')
-                    return render_template('adminSide/adminIndex.html')
-                else:
-                    cur.close()
-                    flash("Password doesn't not match", 'danger')
-            else:
-                cur.close()
-                flash('User not found', 'danger')
-                return render_template('login.html')
-        else:
-            cur = mysql.connection.cursor()
-            queryStatement = f"SELECT * FROM customer WHERE customer_email = '{user}'"
-            numRow = cur.execute(queryStatement)
-            if numRow > 0:
-                user =  cur.fetchone()
-                if check_password_hash(user['customer_password'], loginForm['customer_password']):
-
-                    # Record session information
-                    session['login'] = True
-                    session['email'] = user['customer_email']
-                    session['firstName'] = user['customer_firstname']
-                    session['lastName'] = user['customer_lastname']
-                    session['dob'] = user['customer_dob']
-                    session['Phone_number'] = user['customer_phone_number']
-                    session['id'] = user['customer_ID']
-                    flash('Welcome ' + session['firstName'], 'success')
-                    #flash("Log In successful",'success')
-                    return redirect('/')
-                else:
-                    cur.close()
-                    flash("Password doesn't not match", 'danger')
-            else:
-                cur.close()
-                flash('User not found', 'danger')
-                return render_template('login.html')
-            cur.close()
-            return redirect('/')
-    return render_template('register.html')
-
 
 
 # where add-ons are selected
@@ -236,7 +138,7 @@ def mybookings():
         return redirect('/login')
     
     if session['login'] != True:
-        return redirect('/register')
+        return redirect('/login')
     else:
         cur = mysql.connection.cursor()
         print(session['id'])
@@ -387,7 +289,116 @@ def adminToday():
         return render_template('adminSide/adToday.html', today=today)
     else:
         return render_template('adminSide/adToday.html')
-        
+
+
+@app.route('/login/', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('login.html')
+    elif request.method == 'POST':
+        form = request.form
+        if form['formType'] == '1':
+            return log(form)
+        elif form['formType'] == '2':
+            return regis(form)
+
+def log(form):
+    loginForm = form
+    user = loginForm['signin_email']
+    if ("@admin.co.th" in user):
+        cur = mysql.connection.cursor()
+        queryStatement = f"SELECT * FROM admin WHERE admin_email = '{user}'"
+        numRow = cur.execute(queryStatement)
+        if numRow > 0:
+            user =  cur.fetchone()
+            if check_password_hash(user['admin_password'], loginForm['signin_password']):
+
+            # Record session information
+                session['login'] = True
+                session['email'] = user['admin_email']
+                session['firstName'] = user['admin_firstname']
+                session['lastName'] = user['admin_lastname']
+                session['dob'] = user['admin_dob']
+                session['Phone_number'] = user['admin_phone_number']
+                session['id'] = user['admin_ID']
+                flash('Welcome ' + session['firstName'], 'success')
+            #flash("Log In successful",'success')
+                return render_template('adminSide/adminIndex.html')
+            else:
+                cur.close()
+                flash("Password doesn't not match", 'danger')
+        else:
+            cur.close()
+            flash('User not found', 'danger')
+            return render_template('login.html')
+    else:
+        cur = mysql.connection.cursor()
+        queryStatement = f"SELECT * FROM customer WHERE customer_email = '{user}'"
+        cur.execute(queryStatement)
+        numRow = cur.rowcount
+        if numRow > 0:
+            user =  cur.fetchone()
+            if check_password_hash(user['customer_password'], loginForm['signin_password']):
+
+                # Record session information
+                session['login'] = True
+                session['email'] = user['customer_email']
+                session['firstName'] = user['customer_firstname']
+                session['lastName'] = user['customer_lastname']
+                session['dob'] = user['customer_dob']
+                session['Phone_number'] = user['customer_phone_number']
+                session['id'] = user['customer_ID']
+                flash('Welcome ' + session['firstName'], 'success')
+                #flash("Log In successful",'success')
+                return redirect('/')
+            else:
+                cur.close()
+                flash("Password doesn't not match", 'danger')
+        else:
+            cur.close()
+            flash('User not found', 'danger')
+            return render_template('login.html')
+        cur.close()
+        return redirect('/')
+    
+
+def regis(form):
+    userDetails = form    
+    if userDetails['signup_password'] != userDetails['signup_confirm_password']:
+        flash('Passwords do not match!', 'danger')
+        return render_template('login.html')
+    
+    cur = mysql.connection.cursor()
+    p1 = userDetails['signup_firstname']
+    p2 = userDetails['signup_lastname']
+    p3 = userDetails['signup_dob']
+    p4 = userDetails['signup_password']
+    p5 = userDetails['signup_email']
+    p6 = userDetails['signup_phone_number']
+
+    
+
+    hashed_pw = generate_password_hash(p4)    
+    queryStatement = (
+        f"INSERT INTO "
+        f"customer(customer_firstname,customer_lastname, customer_dob, customer_password, customer_email, customer_phone_number) "
+        f"VALUES('{p1}', '{p2}', '{p3}','{hashed_pw}','{p5}','{p6}')"
+    )
+    print(queryStatement)
+
+    cur.execute(queryStatement)
+    mysql.connection.commit()
+    cur.close()
+    flash("Form Submitted Successfully.", "success")
+    return redirect('/')
+
+@app.route('/test', methods=['GET', 'POST'])
+def test():
+    return render_template('test.html')
+
+@app.route('/test2', methods=['GET', 'POST'])
+def test2():
+    return render_template('test2.html')
 
 if __name__ == '__main__':
     app.run(

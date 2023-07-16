@@ -1,16 +1,28 @@
-{% block content %}
 <link rel="stylesheet" href='/static/navbar.css' />
+<head>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Oswald&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lato&display=swap"
+    rel="stylesheet"
+  />
+  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</head>
 
-    <input class="menu-icon" type="checkbox" id="menu-icon" name="menu-icon"/>
-    <label for="menu-icon"></label>
-    <nav class="nav">     
-      <ul class="pt-5">
+<body>
+  <input type="checkbox" id="active" />
+  <label for="active" class="menu-btn"><span></span></label>
+  <label for="active" class="close"></label>
+  <div class="wrapper">
+    <ul>
         <li><a href="{{ url_for('index') }}">Home</a></li>
         <li><a href="{{ url_for('mybookings') }}">My Bookings</a></li>
-        <li><a href="{{ url_for('login')}}">Sign In</a><a>/</a><a href="{{ url_for('register')}}">Sign Up</a></li>
+        <li><a href="{{ url_for('login')}}">Sign In</a></li>
+        <li><a href="{{ url_for('login')}}">Sign Up</a></li>
         <li><a href="{{ url_for('logout')}}">Logout</a></li>
-      </ul>
-    </nav>
-  
-
-{% endblock %}
+        <li><a href="{{ url_for('test2')}}">Test</a></li>
+    </ul>
+  </div>
+</body>
