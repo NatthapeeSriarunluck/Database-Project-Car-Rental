@@ -48,10 +48,7 @@ def model():
         return redirect(url_for('login'))
     else:
         cur = mysql.connection.cursor()
-        d1 = session.get('d1', '')
-        query = f"""
-        SELECT m.*, COUNT(c.car_ID) AS available_model_quantity FROM model m LEFT JOIN car c ON m.model_ID = c.model_ID AND c.car_return_date < '{session['d1']}' GROUP BY m.model_ID, m.model_name HAVING available_model_quantity > 0;
-        """
+        query = f"SELECT m.*, COUNT(c.car_ID) AS available_model_quantity FROM model m LEFT JOIN car c ON m.model_ID = c.model_ID AND c.car_return_date < '{session['d1']}'GROUP BY m.model_ID, m.model_name HAVING available_model_quantity > 0;"
         cur.execute(query)
         models = cur.fetchall()
         cur.close()
