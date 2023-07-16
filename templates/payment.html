@@ -10,33 +10,27 @@
 
         <div class="payment-table">
             <table>
-                <thead>
-                    <tr>
-                        <th>Rental Period Cost</th>
-                        <th>Total Add On Costs</th>
-                        <th>Total Payment</th>
-                        <th>Pay</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if booking %}
-                        {% for book in booking %}
-                        <tr>
-                            <td>{{book['booking_payment']}}</td>
-                            <td>{{book['booking_addons_payment']}}</td>
-                            <td>{{book['booking_payment'] + book['booking_addons_payment']}}</td>
-                            <td>
-                                <button class="pay-button">
-                                    <a href="/templates/thankyou.html">Pay</a>
-                                </button>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    {% endif %}
-                </tbody>
+                <tr>
+                    <th>Rental Period Cost</th>
+                    <td>{{ rental_period_price }}</td>
+                </tr>
+                <tr>
+                    <th>Total Add On Costs</th>
+                    <td>{{ addon_price }}</td>
+                </tr>
+                <tr>
+                    <th>Total Payment</th>
+                    <td>{{ total_price }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button class="pay-button">
+                            <a href="{{ url_for('thankyou') }}">Pay</a>
+                        </button>
+                    </td>
+                </tr>
             </table>
         </div>
     </div>
 </body>
-
 {% endblock %}

@@ -22,7 +22,7 @@ def index():
 @app.route('/reserve', methods=['GET', 'POST'])
 def reserve():
     if request.method == 'GET':
-        if session['login'] == True:
+        if 'login' in session and session['login'] == True:
             cur = mysql.connection.cursor()
             query = f"Select CURDATE() as date;"
             cur.execute(query)
@@ -32,20 +32,23 @@ def reserve():
         else:
             flash('Please log in first.')
             return redirect(url_for('login'))
-    
+
     elif request.method == 'POST':
         session['d1'] = request.form['booking_loan_date']
         session['d2'] = request.form['booking_return_date']
-
-        return redirect('model')
+        return redirect(url_for('model'))
 
     return render_template('reserve.html')
 
 
 @app.route('/model/')
 def model():
-    if session['login'] == True:
+    if 'login' not in session or session['login'] != True:
+        flash('Please log in first.')
+        return redirect(url_for('login'))
+    else:
         cur = mysql.connection.cursor()
+        d1 = session.get('d1', '')
         query = f"""
         SELECT m.*, COUNT(c.car_ID) AS available_model_quantity FROM model m LEFT JOIN car c ON m.model_ID = c.model_ID AND c.car_return_date < '{session['d1']}' GROUP BY m.model_ID, m.model_name HAVING available_model_quantity > 0;
         """
@@ -53,9 +56,6 @@ def model():
         models = cur.fetchall()
         cur.close()
         return render_template('model.html', models=models)
-    else:
-        flash('Please log in first.')
-        return redirect(url_for('login'))
 
 
 # where add-ons are selected
@@ -141,11 +141,11 @@ def mybookings():
         return redirect('/login')
     else:
         cur = mysql.connection.cursor()
-        print(session['id'])
+        print("mybookings: session id - " + str(session['id']))
         query = f"SELECT * FROM booking WHERE customer_ID = '{session['id']}'"
         cur.execute(query)
         resultValue = cur.rowcount
-        print(resultValue)
+        print("mybookings: result value session - " + str(resultValue))
         if resultValue > 0:
             bookings = cur.fetchall()
             cur.close()
@@ -157,7 +157,7 @@ def mybookings():
 # customer confirm booking
 @app.route('/confirm_booking/<int:id>', methods=['GET'])
 def confirm_booking(id):
-    return render_template('payment.html', booking_id=id)
+    return render_template('payment.html', bookingID=id)
 
 # customer cancel booking
 @app.route('/cancel_booking/<int:id>', methods=['GET'])
@@ -172,23 +172,23 @@ def cancel_booking(id):
     flash("You have successfully cancelled your booking.", "success")
     return redirect('/mybookings')
 
-@app.route('/payment/<int:bookingID>', methods=['GET']) 
+@app.route('/payment/<int:bookingID>', methods=['GET', 'POST']) 
 def payment(bookingID):
     cur = mysql.connection.cursor()
 
     query = f"SELECT * FROM booking WHERE booking_ID = {bookingID}"
-    print(query)
     cur.execute(query)
     booking = cur.fetchone()
-    print(booking)
-
-    mysql.connection.commit()
     cur.close()
 
-    flash("Payment Successful. Thank you for your patrionage.")
-    return redirect('/thankyou')
+    rental_period_price = booking['booking_payment']
+    addon_price = booking['booking_addons_payment']
+    total_price = rental_period_price + addon_price
 
-@app.route('/thankyou/')
+    flash("Payment Successful. Thank you for your patronage.")
+    return render_template('payment.html', rental_period_price=rental_period_price, addon_price=addon_price, total_price=total_price)
+
+@app.route('/thankyou', methods=['GET'])
 def thankyou():
     return render_template('thankyou.html')
 
@@ -384,6 +384,7 @@ def regis(form):
         f"customer(customer_firstname,customer_lastname, customer_dob, customer_password, customer_email, customer_phone_number) "
         f"VALUES('{p1}', '{p2}', '{p3}','{hashed_pw}','{p5}','{p6}')"
     )
+    print("regis: query statement")
     print(queryStatement)
 
     cur.execute(queryStatement)

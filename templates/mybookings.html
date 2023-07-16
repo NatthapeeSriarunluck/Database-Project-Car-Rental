@@ -16,8 +16,8 @@
                     <th>Car Model</th>
                     <th>Loan Date</th>
                     <th>Return Date</th>
+                    <th>Rental Period Cost</th>
                     <th>Add Ons</th>
-                    <th>Days Cost</th>
                     <th>Add Ons Cost</th>
                     <th>Status</th>
                     <th>Action</th>
@@ -30,9 +30,9 @@
                     <td>{{book['model_ID']}}</td>
                     <td>{{book['booking_loan_date']}}</td>
                     <td>{{book['booking_return_date']}}</td>
+                    <td>{{book['booking_payment']}}</td>
                     <td>{{book['booking_addons']}}</td>
                     <td>{{book['booking_addons_payment']}}</td>
-                    <td>{{book['booking_payment']}}</td>
                     <td>{{book['booking_status']}}</td>
                     <td>
                         <button class="confirm-button">
@@ -52,7 +52,7 @@
             </tbody>
         </table>
         <button class="new-booking-button">
-            <a href="/">New Booking</a>
+            <a href="/reserve">New Booking</a>
         </button>
     </div>
 </body>
