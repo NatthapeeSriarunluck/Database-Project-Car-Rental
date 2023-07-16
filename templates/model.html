@@ -1,50 +1,39 @@
 {% extends 'base.html' %}
 {% block content %}
 <link rel="stylesheet" href='/static/model.css' />
+<link rel="stylesheet" href='/static/test2.css' />
 
 <h1>Available Models</h1>
 {% if models %}
     {% for model in models%}
-    <div class="card {{model['model_type']}}">
-        <div class="additional">
-          <div class="user-card">
-            <div class="level center">
-              {{ model['model_type']}}
-            </div>
-          </div>
-          <div class="more-info">
-            <h2>{{ model['model_name']}}</h2>
-            <div class="coords">
-              <span>Fuel: {{ model['model_gasoline_type']}} </span>
-            </div>
-            <div class="coords">
-                <span>Gear: {{ model['model_gear_type']}}</span>
-              </div>
-            <div class="stats">
-              <div>
-                <div class="title">Seats</div>
-                <i class="fa fa-trophy"></i>
-                <div class="value">{{ model['model_passenger']}}</div>
-              </div>
-              <div>
-                <div class="title">Price</div>
-                <i class="fa fa-group"></i>
-                <div class="value">{{ model['model_price_per_day']}} </div>
-              </div>
-              <div>
-                <a href="{{ url_for('booking', model_id=model['model_ID']) }}" type="button" class="btn button text-light" id="">Book this model</a>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="general">
-          <h2>{{ model['model_type']}}</h2>
-            <p>
-                Amount of cars available at your loan date: {{model['available_model_quantity']}}
-            </p>
-          <span class="more">Mouse over the card for more info</span>
-        </div>
+    <div class="blog-card kks">
+      <div class="meta">
+        <div class="photo" style="background-image: url(https://r4.wallpaperflare.com/wallpaper/838/743/578/lamborghini-lamborghini-urus-blue-car-car-wallpaper-e77eb8995c05154c0a437d640729000d.jpg)"></div>
+        <ul class="details">
+          <li class="author">{{model['model_name']}}</li>
+          <li class="date"></li>
+          <li class="tags">
+            <ul>
+              <li>{{model['model_gear_type']}}</li>
+              <li>{{model['model_gasoline_type']}}</li>
+            </ul>
+          </li>
+        </ul>
       </div>
+      <div class="description">
+        <h1>{{model['model_type']}}</h1>
+        <h2>Price : {{ model['model_price_per_day']}} baht/day</h2>
+        <p>
+          {{model['model_name']}}, with seating for {{model['model_passenger']}} people.
+        </p>
+        <p>
+          {{model['model_gear_type']}} gear type,  uses {{model['model_gasoline_type']}} fuel.
+        </p>
+        <p class="read-more">
+          <a href="{{ url_for('booking', model_id=model['model_ID']) }}">Book Model</a>
+        </p>
+      </div>
+    </div>
       {% endfor %}
 {% else %}
     <h1>No cars today</h1>

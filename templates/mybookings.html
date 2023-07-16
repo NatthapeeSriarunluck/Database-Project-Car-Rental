@@ -1,60 +1,30 @@
-{% extends 'base.html' %}
 {% block content %}
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='mybookings.css') }}">
-<body>
-    <link rel="stylesheet" href="/static/mybookings.css" />
-    <div class="mybookings">
-        <div class="head">
-            <h1>My Bookings</h1>
-        </div>
-    </div>
-
-    <div class="my-bookings-table">
-        <table>
-            <thead>
-                <tr>
-                    <th>Car Model</th>
-                    <th>Loan Date</th>
-                    <th>Return Date</th>
-                    <th>Rental Period Cost</th>
-                    <th>Add Ons</th>
-                    <th>Add Ons Cost</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if booking %}
+<link rel="stylesheet" href="/static/mybookings.css" />
+{% include 'navbar.html'%}
+<div class="heading">
+    <h1>My Bookings</h1>
+  </div>
+  <div class="container">
+    <div class="list">
+        {% if booking %}
                 {% for book in booking %}
-                <tr>
-                    <td>{{book['model_name']}}</td>
-                    <td>{{book['booking_loan_date']}}</td>
-                    <td>{{book['booking_return_date']}}</td>
-                    <td>{{book['booking_payment']}}</td>
-                    <td>{{book['booking_addons']}}</td>
-                    <td>{{book['booking_addons_payment']}}</td>
-                    <td>{{book['booking_status']}}</td>
-                    <td>
-                        <button class="confirm-button">
-                            <a href="/confirm_booking/{{ book.booking_ID }}">Pay</a>
-                        </button>
-                        <button class="cancel-button">
-                            <a href="/cancel_booking/{{ book.booking_ID }}">Cancel</a>
-                        </button>
-                    </td>
-                </tr>
-                {% endfor %}
-                {% else %}
-                <tr>
-                    <td colspan="9" class="display-3">No Bookings to display.</td>
-                </tr>
-                {% endif %}
-            </tbody>
-        </table>
-        <button class="new-booking-button">
-            <a href="/reserve">New Booking</a>
-        </button>
+      <div class="num btn" href="#">
+        <h3>
+            {{book['model_name']}} from [{{book['booking_loan_date']}}] To [{{book['booking_return_date']}}]
+            <a href="/confirm_booking/{{ book.booking_ID }}"><button class="icon-btn add-btn confirm-button">
+                <div class="add-icon"></div>
+                <div class="btn-txt">Pay</div>
+              </button></a>
+              <a href="/cancel_booking/{{ book.booking_ID }}"><button class="icon-btn add-btn cancel-button">  
+                <div class="btn-txt">Cancel</div>
+              </button></a>
+        </h3>
+      </div>
+      {% endfor %}
+    {% else %}
+    {% endif %}
     </div>
-</body>
-
+  </div>
+  <h5 class="message"> <a href="/reserve"><button class="icon-btn add-btn new-booking-button">New Booking</button></a></h5>
+  
 {% endblock %}

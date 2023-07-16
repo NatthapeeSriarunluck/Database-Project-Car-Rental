@@ -1,39 +1,65 @@
-{% extends 'base.html' %}
-{% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='booking.css') }}">
+<link rel="stylesheet" href="/static/booking.css" />
+<header class="header">
+</header>
 
-<h1>Book Now</h1>
 
 <form action="{{ url_for('register_booking') }}" method="POST">
-  <table class="addons-table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Price</th>
-        <th>Checkbox</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% if addons %}
-      {% for addon in addons %}
-      <tr>
-        <td>{{ addon['addons_ID'] }}</td>
-        <td>{{ addon['addons_name'] }}</td>
-        <td>{{ addon['addons_price'] }}</td>
-        <td>
-          <input type="checkbox" name="selected_addons[]" value="{{ addon['addons_ID'] }}">
-        </td>
-      </tr>
-      {% endfor %}
-      {% else %}
-      <tr>
-        <td colspan="4">There is nothing here</td>
-      </tr>
-      {% endif %}
-    </tbody>
-  </table>
-  <button type="submit" class="submit-button">Submit</button>
-</form>
+<div class="container mt-5">
+    <div class="row">
+      <div class="col-12">
+        <article class="blog-card">
+          <div class="blog-card__background">
+            <div class="card__background--wrapper">
+              <div class="card__background--main" style="background-image: url('https://r4.wallpaperflare.com/wallpaper/433/840/12/mercedes-benz-sl65-amg-black-series-car-carlsson-tuning-wallpaper-99d6f2366bdaef9a300b22ca38f78593.jpg');">
+                <div class="card__background--layer"></div>
+              </div>
+            </div>
+          </div>
+          <div class="blog-card__head">
+            <span class="date__box">
+              <span class="date__month">Choose Addons</span>
+            </span>
+          </div>
+          <div class="blog-card__info">
+            <h5>Available addons for when you travel</h5>
+            <p>
+                For maximum comfort and convenience
+            </p>
+            <button class="fancy">
+                <span class="top-key"></span>
+                <a type="submit" class="submit-button">BOOK NOW</a>
+                <span class="bottom-key-1"></span>
+                <span class="bottom-key-2"></span>
+              </button>
+              
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+  
+  <section class="detail-page">
+  </section>
 
-{% endblock %}
+<section class="content">
+	<ul class="list">
+        {% if addons %}
+        {% for addon in addons %}
+        <li class="list__item">
+        <label class="label--checkbox">
+            <input type="checkbox" class="checkbox" name="selected_addons[]" value="{{ addon['addons_ID'] }}" checked>
+            {{ addon['addons_name'] }}, + {{ addon['addons_price']}} baht/day
+        </label>
+        </li>
+        {% endfor %}
+      {% else %}
+      <li class="list__item">
+        <label class="label--checkbox">
+            <input type="checkbox" class="checkbox" checked>
+                No addon available
+        </label>
+        </li>
+      {% endif %}
+    </ul>
+</section>
+</form>

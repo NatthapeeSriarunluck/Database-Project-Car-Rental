@@ -1,36 +1,20 @@
-{% extends 'base.html' %}
 {% block content %}
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='payment.css') }}">
-<body>
-    <link rel="stylesheet" href="/static/payment.css" />
-    <div class="payment">
-        <div class="head">
-            <h1>Payment</h1>
-        </div>
-
-        <div class="payment-table">
-            <table>
-                <tr>
-                    <th>Rental Period Cost</th>
-                    <td>{{ rental_period_price }}</td>
-                </tr>
-                <tr>
-                    <th>Total Add On Costs</th>
-                    <td>{{ addon_price }}</td>
-                </tr>
-                <tr>
-                    <th>Total Payment</th>
-                    <td>{{ total_price }}</td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <button class="pay-button">
-                            <a href="/thankyou/{{booking_id}}">Pay</a>
-                        </button>
-                    </td>
-                </tr>
-            </table>
-        </div>
+<link rel="stylesheet" href="/static/test.css" />
+{% include 'navbar.html'%}
+<div class="container">
+	<h1>
+        Total Amount : 
+        <span>{{ total_price }} Baht</span>
+    </h1>
+	<ul>
+		<li>Rental Price</li>
+		<li>{{ rental_period_price }}</li>
+		<li>Addon Price </li>
+		<li>{{ addon_price }}</li>
+	</ul>
+    <h5 class="message"> <a href="/thankyou/{{booking_id}}"><button class="icon-btn add-btn new-booking-button">Pay</button></a></h5>
+</div>
     </div>
-</body>
+  </div>
+  
 {% endblock %}
