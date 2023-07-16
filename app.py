@@ -186,11 +186,29 @@ def payment(bookingID):
     total_price = rental_period_price + addon_price
 
     flash("Payment Successful. Thank you for your patronage.")
-    return render_template('payment.html', rental_period_price=rental_period_price, addon_price=addon_price, total_price=total_price)
+    return render_template('payment.html', booking_id=bookingID, rental_period_price=rental_period_price, addon_price=addon_price, total_price=total_price)
 
-@app.route('/thankyou', methods=['GET'])
-def thankyou():
-    return render_template('thankyou.html')
+@app.route('/thankyou/<int:booking_id>', methods=['GET', 'POST'])
+def thankyou(booking_id):
+    if request.method == 'GET':
+        return render_template('thankyou.html')
+    else:
+        cur = mysql.connection.cursor()
+
+        query = f"SELECT * FROM booking WHERE booking_ID = {booking_id}"
+        cur.execute(query)
+        booking = cur.fetchone()
+        cur.close()
+
+        cur = mysql.connection.cursor()
+        booking_car_id = booking['car_ID']
+        booking_car_loan_date = booking['booking_loan_date']
+        booking_car_return_date = booking['booking_return_date']
+
+        query = f"UPDATE car SET car_loan_date = '{booking_car_loan_date}', car_return_date = '{booking_car_return_date}' WHERE car_ID = {booking_car_id}"
+
+        flash("Payment Successful. Thank you for your patronage.")
+        return render_template('thankyou.html')
 
 @app.route('/logout')
 def logout():
