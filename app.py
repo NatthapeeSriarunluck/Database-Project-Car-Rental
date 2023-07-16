@@ -44,11 +44,14 @@ def reserve():
 @app.route('/model/')
 def model():
     if 'login' not in session or session['login'] != True:
-        flash('Please log in first.')
+        flash('Please log in first.')[su]
         return redirect(url_for('login'))
     else:
         cur = mysql.connection.cursor()
-        query = f"SELECT m.*, COUNT(c.car_ID) AS available_model_quantity FROM model m LEFT JOIN car c ON m.model_ID = c.model_ID AND c.car_return_date < '{session['d1']}'GROUP BY m.model_ID, m.model_name HAVING available_model_quantity > 0;"
+        d1 = session.get('d1', '')
+        query = f"""
+        SELECT m.*, COUNT(c.car_ID) AS available_model_quantity FROM model m LEFT JOIN car c ON m.model_ID = c.model_ID AND c.car_return_date < '{session.get('d1')}' GROUP BY m.model_ID, m.model_name HAVING available_model_quantity > 0;
+        """
         cur.execute(query)
         models = cur.fetchall()
         cur.close()
@@ -154,7 +157,7 @@ def mybookings():
 # customer confirm booking
 @app.route('/confirm_booking/<int:id>', methods=['GET'])
 def confirm_booking(id):
-    return render_template('payment.html', bookingID=id)
+    return redirect(url_for('payment', bookingID=id))
 
 # customer cancel booking
 @app.route('/cancel_booking/<int:id>', methods=['GET'])
