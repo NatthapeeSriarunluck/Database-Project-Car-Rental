@@ -141,11 +141,9 @@ def mybookings():
         return redirect('/login')
     else:
         cur = mysql.connection.cursor()
-        print("mybookings: session id - " + str(session['id']))
         query = f"SELECT * FROM booking WHERE customer_ID = '{session['id']}'"
         cur.execute(query)
         resultValue = cur.rowcount
-        print("mybookings: result value session - " + str(resultValue))
         if resultValue > 0:
             bookings = cur.fetchall()
             cur.close()
@@ -185,7 +183,6 @@ def payment(bookingID):
     addon_price = booking['booking_addons_payment']
     total_price = rental_period_price + addon_price
 
-    flash("Payment Successful. Thank you for your patronage.")
     return render_template('payment.html', booking_id=bookingID, rental_period_price=rental_period_price, addon_price=addon_price, total_price=total_price)
 
 @app.route('/thankyou/<int:booking_id>', methods=['GET', 'POST'])
@@ -194,18 +191,20 @@ def thankyou(booking_id):
         return render_template('thankyou.html')
     else:
         cur = mysql.connection.cursor()
-
         query = f"SELECT * FROM booking WHERE booking_ID = {booking_id}"
         cur.execute(query)
+
         booking = cur.fetchone()
         cur.close()
 
-        cur = mysql.connection.cursor()
         booking_car_id = booking['car_ID']
         booking_car_loan_date = booking['booking_loan_date']
         booking_car_return_date = booking['booking_return_date']
-
+        
+        cur = mysql.connection.cursor()
         query = f"UPDATE car SET car_loan_date = '{booking_car_loan_date}', car_return_date = '{booking_car_return_date}' WHERE car_ID = {booking_car_id}"
+        cur.execute(query)
+        cur.close()
 
         flash("Payment Successful. Thank you for your patronage.")
         return render_template('thankyou.html')
