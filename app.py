@@ -446,9 +446,8 @@ def editBooking(id):
         ba = form['booking_addons']
         bp = form['booking_payment']
         bap = form['booking_addons_payment'] 
-        query = (f"SET foreign_key_checks = 0;"
+        query = (
             f"UPDATE booking SET customer_ID = '{cusID}', model_ID = '{mID}',model_name = '{mn}', car_ID = '{car_ID}', booking_loan_date = '{bld}',booking_return_date = '{brd}', booking_payment = '{bp}', booking_addons_payment = '{bap}',booking_addons = '{ba}' WHERE booking_ID = {id};"
-            f"SET foreign_key_checks = 1;"
             )
         cur.execute(query)
         cur.close()
