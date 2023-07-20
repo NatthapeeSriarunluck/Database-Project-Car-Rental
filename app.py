@@ -119,9 +119,15 @@ def register_booking():
     result = cursor.fetchone()
     car_id = result['booked_car_ID']
     cursor.close() 
+    cursor = mysql.connection.cursor()
+    args = session.get('model_id')
+    cursor.execute(f"SELECT model_name FROM model WHERE model_id = {args}")
+    result = cursor.fetchone()
+    model_name = result['model_name']
+    cursor.close() 
     #make a new entry in the booking table
     cursor = mysql.connection.cursor()
-    cursor.execute(f"INSERT INTO booking (customer_ID, model_ID,car_ID, booking_loan_date, booking_return_date, booking_payment, booking_addons_payment, booking_addons, booking_status) VALUES ({session.get('id')},{session.get('model_id')}, {car_id}, '{session.get('d1')}', '{session.get('d2')}', {days_price}, {addons_price}, '{modified_string}', 'Pending')")
+    cursor.execute(f"INSERT INTO booking (customer_ID, model_ID,car_ID, booking_loan_date, booking_return_date, booking_payment, booking_addons_payment, booking_addons, booking_status, model_name) VALUES ({session.get('id')},{session.get('model_id')}, {car_id}, '{session.get('d1')}', '{session.get('d2')}', {days_price}, {addons_price}, '{modified_string}', 'Pending', '{model_name}')")
     mysql.connection.commit()
     cursor.close()
     flash("Booking Submitted Successfully.", "success")
@@ -178,12 +184,13 @@ def payment(bookingID):
     cur.execute(query)
     booking = cur.fetchone()
     cur.close()
-
+    
+    model_name = booking['model_name']
     rental_period_price = booking['booking_payment']
     addon_price = booking['booking_addons_payment']
     total_price = rental_period_price + addon_price
 
-    return render_template('payment.html', booking_id=bookingID, rental_period_price=rental_period_price, addon_price=addon_price, total_price=total_price)
+    return render_template('payment.html', booking_id=bookingID, rental_period_price=rental_period_price, addon_price=addon_price, total_price=total_price, model_name=model_name)
 
 @app.route('/thankyou/<int:booking_id>', methods=['GET', 'POST'])
 def thankyou(booking_id):
