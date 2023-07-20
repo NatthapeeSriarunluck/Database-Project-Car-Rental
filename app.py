@@ -425,9 +425,76 @@ def test():
 def test2():
     return render_template('test2.html')
 
-@app.route('/admin/add_booking', methods=['GET', 'POST'])
+@app.route('/admin/editBooking/<int:id>', methods=['GET', 'POST'])
+def editBooking(id):
+    if(request.method == 'GET'):
+        cur = mysql.connection.cursor()
+        query = f"SELECT * FROM booking WHERE booking_ID = '{id}'"
+        cur.execute(query)
+        book = cur.fetchone()
+        cur.close()
+        return render_template('adminSide/editBooking.html', booking=book)
+    elif(request.method == 'POST'):
+        form = request.form
+        cur = mysql.connection.cursor()
+        cusID = form['customer_id']
+        mID = form['model_id']
+        mn = form['model_name']
+        car_ID = form['car_id']
+        bld = form['booking_loan_date']
+        brd = form['booking_return_date']
+        ba = form['booking_addons']
+        bp = form['booking_payment']
+        bap = form['booking_addons_payment'] 
+        query = (f"SET foreign_key_checks = 0;"
+            f"UPDATE booking SET customer_ID = '{cusID}', model_ID = '{mID}',model_name = '{mn}', car_ID = '{car_ID}', booking_loan_date = '{bld}',booking_return_date = '{brd}', booking_payment = '{bp}', booking_addons_payment = '{bap}',booking_addons = '{ba}' WHERE booking_ID = {id};"
+            f"SET foreign_key_checks = 1;"
+            )
+        cur.execute(query)
+        cur.close()
+        return adminBooking()
+
+@app.route('/admin/addBooking/', methods=['GET', 'POST'])
+def addBooking():
+    if(request.method == 'GET'):
+        cur = mysql.connection.cursor()
+        query = f"SELECT * FROM customer WHERE customer_ID = '{id}'"
+        cur.execute(query)
+        customer = cur.fetchone()
+        cur.close()
+        return render_template('adminSide/editBooking.html')
+    elif(request.method == 'POST'):
+        form = request.form
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM admin")
+        val = cur.fetchall()
+    cur.close()
+
+@app.route('/admin/addCustomer', methods=['GET', 'POST'])
+def addCustomer():
+    return render_template('adminSide/editBooking.html')
+
+@app.route('/admin/addCarModel', methods=['GET', 'POST'])
+def addCarModel():
+    return render_template('adminSide/editBooking.html')
+
+@app.route('/admin/addCar', methods=['GET', 'POST'])
+def addCar():
+    return render_template('adminSide/editBooking.html')
+
+@app.route('/admin/addAdmin', methods=['GET', 'POST'])
+def addAdmin():
+    return render_template('adminSide/editBooking.html')
+
+@app.route('/admin/delete/customer', methods=['GET', 'POST'])
 def add_booking():
-    return render_template('test.html')
+    return redirect('/admin/adCustomer')
+
+
+
+
+
+
 
 if __name__ == '__main__':
     app.run(

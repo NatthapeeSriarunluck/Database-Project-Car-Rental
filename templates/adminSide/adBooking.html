@@ -28,7 +28,7 @@
             <div class="product-cell">{{td['booking_payment']}}</div>
             <div class="product-cell">{{td['booking_addons_payment']}}</div>
             
-            <div  class="product-cell"><button type="button" class="btn btn-primary">edit</button>/<button type="button" class="btn btn-danger">delete</button></div>
+            <div  class="product-cell"><a href="admin/editBooking/{{td['booking_ID']}}"><button type="button" href="admin/editBooking/{{td['booking_ID']}}" class="btn btn-primary">edit</button></a>/<button type="button" class="btn btn-danger">delete</button></div>
         </div>
 
         {% endfor %}

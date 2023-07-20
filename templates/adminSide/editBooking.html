@@ -1,0 +1,48 @@
+{% extends 'adminSide/adminBase.html' %}
+{% block content %}
+<link rel="stylesheet" href="/static/test.css" />
+<form method="POST">
+<div class="nice-form-group">
+    <label class="text-white">customer ID</label>
+    <input id="customer_id" name="customer_id" type="text" value="{{booking['customer_ID']}}" />
+  </div>
+  <div class="nice-form-group">
+    <label class="text-white">model ID</label>
+    <input id="model_id" name="model_id" type="text"value="{{booking['model_ID']}}" />
+  </div>
+  <div class="nice-form-group">
+    <label class="text-white">model Name</label>
+    <input id="model_name" name="model_name" type="text" value="{{booking['car_ID']}}" />
+  </div>
+  <div class="nice-form-group">
+    <label class="text-white">Car ID</label>
+    <input id="car_id" name="car_id" type="text" value="{{booking['car_ID']}}" />
+  </div>
+  <div class="nice-form-group">
+    <label class="text-white">Booking Loan Date</label>
+    <input id="booking_loan_date" name="booking_loan_date" type="date" value="{{booking['booking_loan_date']}}" />
+  </div>
+  
+  <div class="nice-form-group">
+    <label class="text-white">Booking Return Date</label>
+    <input id="booking_return_date" name="booking_return_date" type="date" value="{{booking['booking_return_date']}}" />
+  </div>
+  
+  <div class="nice-form-group">
+    <label class="text-white">Addons</label>
+    <input type="text"id="booking_addons" name="booking_addons" value="{{booking['booking_addons']}}" />
+  </div>
+  
+  <div class="nice-form-group">
+    <label class="text-white">Payment</label>
+    <input type="text"id="booking_payment" name="booking_payment" value="{{booking['booking_payment']}}" />
+  </div>
+  
+  <div class="nice-form-group">
+    <label class="text-white">Addons Payment</label>
+    <input type="text" id="booking_addons_payment" name="booking_addons_payment" value="{{booking['booking_addons_payment']}}" />
+  </div>
+
+  <button type="submit" class="button">Register</button>
+</form>
+{% endblock %}
